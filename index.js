@@ -20,6 +20,7 @@ async function run(){
         const usersCollection = database.collection("users")
         const teachersCollection = database.collection("teachers")
         const classesCollection = database.collection("classes")
+        const studentsCollection = database.collection("students")
 
         // insert user data in database
         app.post('/users', async(req, res) => {
@@ -59,12 +60,20 @@ async function run(){
         })
 
         // Post calsses data to database
-
         app.post('/classes', async(req, res) => {
             const classData = req.body 
             const result = await classesCollection.insertOne(classData)
             res.json(result)
             console.log("student classes data result", result)
+        })
+
+        // Post admission students data to database
+        app.post('/students', async(req, res) => {
+            const studentsData = req.body
+            console.log("students data ", studentsData)
+            const result = await studentsCollection.insertOne(studentsData)
+            res.json(result)
+            console.log("students result", result)
         })
 
     }finally{
