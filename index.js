@@ -24,7 +24,9 @@ async function run(){
         const classesCollection = database.collection("classes")
         const studentsCollection = database.collection("students")
         const noticeCollection = database.collection("notice")
-
+        const libraryCollection = database.collection("library")
+        const reviewsCollection = database.collection("reviews")
+        
         // insert user data in database
         app.post('/users', async(req, res) => {
             const userData = req.body
@@ -169,6 +171,41 @@ async function run(){
         // Get notice data from database
         app.get('/notices', async(req, res) => {
             const cursor = noticeCollection.find({})
+            const result = await cursor.toArray()
+            res.json(result)
+        })
+
+        // Get library data from database 
+        app.get('/library', async(req, res) => {
+            const cursor = libraryCollection.find({})
+            const result = await cursor.toArray()
+            res.json(result)
+        })
+
+        // post review data in database
+        app.post('/reviews', async(req, res) => {
+            // const reviewsData = req.body
+            // console.log("reviews data",reviewsData)
+            // console.log("reviews images", req.files)
+            const name = req.body.name 
+            const description = req.body.description
+            const pic = req.files.image 
+            const picData = pic.data
+            const encodedPic = picData.toString('base64')
+            const imageBuffer = Buffer.from(encodedPic, 'base64')
+            const reviewData = {
+                name,
+                description,
+                image: imageBuffer
+            }
+            // console.log(reviewData)
+            const result = await reviewsCollection.insertOne(reviewData)
+            res.json(result)
+        })
+
+        // get review data from database 
+        app.get('/reviews', async(req, res) => {
+            const cursor = reviewsCollection.find({})
             const result = await cursor.toArray()
             res.json(result)
         })
