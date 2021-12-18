@@ -45,6 +45,32 @@ async function run(){
             res.json(result)
             // console.log("user update result", result)
         })
+
+        // find email and set head teacher role
+        app.put('/users/head', async(req, res) => {
+            const head = req.body
+            // console.log("head Teachers email", head.email)
+            const filter = {email: head.email}
+            const updateDoc = {$set: {role: "head"}}
+
+            const result = await usersCollection.updateOne(filter, updateDoc)
+            res.json(result)
+        })
+
+        // check head teacher using email 
+        app.get('/users/:email', async(req, res) => {
+            const email = req.params.email 
+            // console.log("show email", email)
+            const query = {email: email}
+            const result = await usersCollection.findOne(query)
+            // console.log("users result", result)
+            let isHead = false
+            if(result?.role === "head"){
+                isHead = true 
+            }
+            res.json({head: isHead})
+        })
+
         // GET method to collect teachers data 
         app.get('/teachers', async(req, res) => {
             const cursor = teachersCollection.find({})
@@ -81,13 +107,42 @@ async function run(){
             // console.log("user classes result", result)
         })
 
+        // Delete student calss from database 
+        app.delete('/classes/:id', async(req, res) => {
+            const dltId = req.params.id 
+            // console.log("class id", dltId)
+            const query = {_id: ObjectId(dltId)}
+            const result = await classesCollection.deleteOne(query)
+            console.log("deleted class result", result)
+            res.json(result)
+
+        })
+
         // Post admission students data to database
         app.post('/students', async(req, res) => {
             const studentsData = req.body
-            console.log("students data ", studentsData)
+            // console.log("students data ", studentsData)
             const result = await studentsCollection.insertOne(studentsData)
             res.json(result)
-            console.log("students result", result)
+            // console.log("students result", result)
+        })
+
+        app.get('/students', async(req, res) => {
+            const cursor = studentsCollection.find({})
+            const result = await cursor.toArray()
+            // console.log("student data result", result)
+            res.json(result)
+        })
+
+        // Delete an student form database 
+        app.delete('/students/:id', async(req, res) => {
+            const dltId = req.params.id 
+            // console.log("students id", dltId)
+            const query = {_id: ObjectId(dltId)}
+            const result = await studentsCollection.deleteOne(query)
+            console.log("delete student result", result)
+            res.json(result)
+
         })
 
         // Post notice data in database
