@@ -182,7 +182,7 @@ async function run(){
             res.json(result)
         })
 
-        // post review data in database
+        // post review data on database
         app.post('/reviews', async(req, res) => {
             // const reviewsData = req.body
             // console.log("reviews data",reviewsData)
@@ -203,11 +203,12 @@ async function run(){
             res.json(result)
         })
 
-        // get review data from database 
+        // get reviews data from database 
         app.get('/reviews', async(req, res) => {
             const cursor = reviewsCollection.find({})
             const result = await cursor.toArray()
             res.json(result)
+            
         })
 
     }finally{
